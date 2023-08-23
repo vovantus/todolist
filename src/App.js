@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
-import { db, fireApp, auth } from './firebase.js';
-import { collection, addDoc, query, getDocs } from 'firebase/firestore';
+//import { db, fireApp, auth } from './firebase.js';
+//import { collection, addDoc, query, getDocs } from 'firebase/firestore';
 
 
 function ShowAddTaskField({addTask}){
@@ -77,14 +77,14 @@ function ShowTaskList({tasks, toggleTask, deleteTask, swapTasks, updateTask}) {
     return (
       <li key={'task' + id} className={ el.open ? 'open' : 'closed' } onDragStart={() => getGragedTask(id)} onDragOver = {onDragOver} onDrop={(e)=>replaceTaskOnDrop(e,id)} draggable>
         <div className="task">
-        <div>
-        <input type="checkbox" checked={!el.open} onChange={()=> toggleTask(id)}></input>
-        {el.text}
-        </div>
-        <div  className="taskButtons">
-        <button onClick={()=> showEditPrompt(id,el.text)}>Изменть</button>
-        <button onClick={()=> showDelPrompt(id)}>Удалить</button>
-        </div>
+          <div>
+            <input type="checkbox" checked={!el.open} onChange={()=> toggleTask(id)}></input>
+            {el.text}
+          </div>
+          <div  className="taskButtons">
+            <button onClick={()=> showEditPrompt(id,el.text)}>Изменть</button>
+            <button onClick={()=> showDelPrompt(id)}>Удалить</button>
+          </div>
         </div>
       </li>
     )
@@ -101,13 +101,10 @@ export default function ToDoList() {
 
   const [tasks, setTasks] = useState(getTasks());
 
-
   function toggleTaskState(id) {
     const updatedTasks = tasks.slice();
     updatedTasks[id].open = !updatedTasks[id].open;
     setTasks(updatedTasks);
-    console.log(updatedTasks);
-    
   }
 
   function addTask(text) {
@@ -124,14 +121,24 @@ export default function ToDoList() {
     const updatedTasks = tasks.slice();
     updatedTasks.splice(id,1);
     setTasks(updatedTasks);
-    console.log(updatedTasks);
   }
 
-  function changeTaskPosition(id, position) {
-    const updatedTasks = tasks.slice();
-    const swapTask = updatedTasks[id];
-    updatedTasks[id] = updatedTasks[position];
-    updatedTasks[position] = swapTask;
+  function changeTaskPosition(position, id) {
+    const moveUp = id > position;    
+    const swaptask = tasks[id];
+    const updatedTasks = [];
+    for (let i=0; i<tasks.length; i++) {
+      if (i===id) {
+        continue;
+      }
+      if (moveUp && i === position) {
+        updatedTasks.push(swaptask);
+      }
+      updatedTasks.push(tasks[i]);
+      if (!moveUp && i === position){
+        updatedTasks.push(swaptask);
+      }
+    }
     setTasks(updatedTasks);
   }
 
