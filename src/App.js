@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 //import { db, fireApp, auth } from './firebase.js';
 //import { collection, addDoc, query, getDocs } from 'firebase/firestore';
@@ -22,12 +21,12 @@ function ShowAddTaskField({addTask}){
     return '';
   }
 
-  return (<>
+  return (
             <div>
               <input type="text" placeholder="Введите текст задачи" id="taskInput" onKeyDown={(e) => addTask(getGetEnterPressed(e))}></input>
               <button onClick={() => addTask(getTaskText())}>Добавить</button>
             </div>
-          </>)
+          )
 
 }
 
@@ -90,9 +89,11 @@ function ShowTaskList({tasks, toggleTask, deleteTask, swapTasks, updateTask}) {
     )
   }
   );
-  return (<>
-            <ul>{tasksList}</ul>          
-          </>);
+  return (
+            <ul>
+              {tasksList}
+              </ul>          
+          );
 };
 
 
@@ -150,7 +151,7 @@ export default function ToDoList() {
 
 
   return (<>
-           <h1>TODO List</h1>
+            <h1>TODO List</h1>
             <ShowAddTaskField addTask={addTask}/>
             <ShowTaskList tasks={tasks} toggleTask={toggleTaskState} deleteTask={delTask} swapTasks={changeTaskPosition} updateTask={updateTask}/>
          </>)
