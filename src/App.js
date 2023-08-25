@@ -1,102 +1,7 @@
 import { useState, useEffect } from "react";
-//import { db, fireApp, auth } from './firebase.js';
-//import { collection, addDoc, query, getDocs } from 'firebase/firestore';
+import ShowAddTaskField from "./TodoList/ShowAddTaskField";
+import { TaskList } from "./TodoList/TaskList";
 
-function ShowAddTaskField({ addTask }) {
-  const [value, setValue] = useState("");
-
-  function getGetEnterPressed(e) {
-    if (e.keyCode === 13) {
-      addTask(value);
-      setValue("");
-    }   
-  }
-
-  return (
-    <>
-      <div>
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          type="text"
-          placeholder="Введите текст задачи"
-          id="taskInput"
-          onKeyDown={getGetEnterPressed}
-        />
-        <button
-          onClick={() => {
-            addTask(value);
-            setValue("");
-          }}
-        >
-          Добавить
-        </button>
-      </div>
-    </>
-  );
-}
-
-function ShowTaskList({
-  tasks,
-  toggleTask,
-  deleteTask,
-  swapTasks,
-  updateTask
-}) {
-  // DONE todo сделать через useState
-  const [draggedTaskId, setDraggedTaskId] = useState(null);
-
-  function showDelPrompt(id) {
-    const userDecision = window.confirm("Удалить задачу?");
-    if (userDecision) {
-      deleteTask(id);
-    }
-  }
-
-  function showEditPrompt(id, text) {
-    const userDecision = prompt("Измените текст задания:", text);
-    if (userDecision) {
-      updateTask(id, userDecision);
-    }
-  }
-
-  function onDragOver(e) {
-    e.preventDefault();
-  }
-
-  if (tasks.length === 0) {
-    return <div>Список задач пуст!</div>;
-  }
-
-  const tasksList = tasks.map((el, id) => {
-    return (
-      <li
-        key={"task" + id}
-        className={el.open ? "open" : "closed"}
-        onDragStart={() => setDraggedTaskId(id)}
-        onDragOver={onDragOver}
-        onDrop={() => swapTasks(id, draggedTaskId)}
-        draggable
-      >
-        <div className="task">
-          <div>
-            <input
-              type="checkbox"
-              checked={!el.open}
-              onChange={() => toggleTask(id)}
-            ></input>
-            {el.text}
-          </div>
-          <div className="taskButtons">
-            <button onClick={() => showEditPrompt(id, el.text)}>Изменть</button>
-            <button onClick={() => showDelPrompt(id)}>Удалить</button>
-          </div>
-        </div>
-      </li>
-    );
-  });
-  return <ul>{tasksList}</ul>;
-}
 
 export default function ToDoList() {
   const [tasks, setTasks] = useState(getTasks());
@@ -132,7 +37,7 @@ export default function ToDoList() {
       [...tasks.slice(0,position), tasks[id],...tasks.slice(position,id),...tasks.slice(id+1)]
       :
       [...tasks.slice(0,id),...tasks.slice(id+1,position+1), tasks[id],...tasks.slice(position+1)];
-
+    setTasks(updatedTasks);
     // const updatedTasks = [];
     // const moveUp = id > position;
     // const swaptask = tasks[id];
@@ -148,8 +53,8 @@ export default function ToDoList() {
     //     updatedTasks.push(swaptask);
     //   }
     // }
-
-    setTasks(updatedTasks);
+    // setTasks(updatedTasks);
+    
   }
 
   function updateTask(id, text) {
@@ -163,7 +68,7 @@ export default function ToDoList() {
     <>
       <h1>TODO List</h1>
       <ShowAddTaskField addTask={addTask} />
-      <ShowTaskList
+      <TaskList
         tasks={tasks}
         toggleTask={toggleTaskState}
         deleteTask={delTask}
