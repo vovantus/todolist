@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { SingleTask } from "./TodoList/TaskStructure";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyDEmhwacQlSHwvkQbAHSyXWdDWx51BpWUM",
@@ -14,39 +15,44 @@ const firebaseConfig = {
 
 const fireApp = initializeApp(firebaseConfig);
 const db = getFirestore(fireApp);
-const auth = getAuth(fireApp);
-
-//   const [fireTasks, setFireTasks] = useState([]);
-
-//   const addFireTask = async (text,sort) => {
-//     try {
-//       const docRef = await addDoc(collection(db, "tasks"), {
-//         text: text,
-//         open: true,
-//         id: sort,
-//       });
-//       console.log("Document written with ID: ", docRef.id);
-//     } catch (error) {
-//       console.error("Error adding document: ", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     // This function fetches tasks from Firestore
-//     const fetchTasks = async () => {
-//         const tasksCol = collection(db, 'tasks');
-//         const taskSnapshot = await getDocs(tasksCol);
-//         const taskList = taskSnapshot.docs.map(doc => ({
-//             id: doc.id,
-//             ...doc.data()
-//         }));
-//         setFireTasks(taskList);
-//     };
-
-//     fetchTasks();
-// }, []);
-
-//  console.log(fireTasks);
 
 
-export { db, fireApp, auth };
+
+// Firestore data converter
+const taskConverter = {
+  fromFirestore: (snapshot, options) => {
+                                            const data = snapshot.data(options);
+                                            return data.tasks.map( task => new SingleTask(task.text, task.open, task.id));
+                                        }
+};
+
+const firestoreDocRef = doc(db, 'tasks', 'graWkmOGCx1NgHp2nyad').withConverter(taskConverter);
+
+
+
+export const addFireTask = async (newTask) => {  
+  await updateDoc(firestoreDocRef, {
+    tasks: arrayUnion({
+                        id: newTask.id,
+                        text: newTask.text,
+                        open: newTask.open
+                      })
+  });  
+};
+
+
+export const delFireTask = async (task) => {
+  await updateDoc(firestoreDocRef, {
+    tasks: arrayRemove(SingleTask.toFireObj(task))
+  });
+
+};
+
+export const updateFireTasks =  async (tasks) => {
+  await updateDoc(firestoreDocRef, { tasks: tasks.map(task => SingleTask.toFireObj(task)) });
+}
+
+export { db }
+export { firestoreDocRef }
+
+
