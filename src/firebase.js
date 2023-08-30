@@ -43,8 +43,8 @@ export const addFireTask = async (newTask) => {
 
 export const delFireTask = async (task) => {
   await updateDoc(firestoreDocRef, {
-    tasks: arrayRemove(SingleTask.toFireObj(task))
-  });
+                                      tasks: arrayRemove(SingleTask.toFireObj(task))
+                                    });
 
 };
 

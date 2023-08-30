@@ -36,6 +36,7 @@ export default function ToDoList() {
     updateFireTasks(updatedTasks);
 
   }
+  
 
   function delTask(id) {
      // DONE tood реализовать удаление через filter()
