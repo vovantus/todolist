@@ -61,7 +61,7 @@ export default function ToDoList() {
   function updateTask(id, text) {
     const updatedTasks = tasks.slice();
     updatedTasks[id].text = text;
-    setTasks(updatedTasks);
+    updateFireTasks(updatedTasks);
   }
 
   // prettier

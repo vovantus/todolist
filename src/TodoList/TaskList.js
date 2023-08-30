@@ -35,7 +35,7 @@ export function TaskList({
     const tasksList = tasks.map((el, id) => {
       return (
         <li
-          key={"task" + id}
+          key={el.id}
           className={el.open ? "open" : "closed"}
           onDragStart={() => setDraggedTaskId(id)}
           onDragOver={onDragOver}
@@ -49,7 +49,7 @@ export function TaskList({
                 checked={!el.open}
                 onChange={() => toggleTask(id)}
               ></input>
-              {el.text}
+              {el.text}{!el.open && '✔'}
             </div>
             <div className="taskButtons">
               <button onClick={() => showEditPrompt(id, el.text)}>Изменть</button>
