@@ -32,11 +32,7 @@ const firestoreDocRef = doc(db, 'tasks', 'graWkmOGCx1NgHp2nyad').withConverter(t
 
 export const addFireTask = async (newTask) => {  
   await updateDoc(firestoreDocRef, {
-    tasks: arrayUnion({
-                        id: newTask.id,
-                        text: newTask.text,
-                        open: newTask.open
-                      })
+    tasks: arrayUnion(SingleTask.toFireObj(newTask))
   });  
 };
 

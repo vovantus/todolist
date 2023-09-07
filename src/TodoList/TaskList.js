@@ -5,10 +5,16 @@ export function TaskList({
     toggleTask,
     deleteTask,
     swapTasks,
-    updateTask
+    updateTask,
+    loading,
+    init
   }) {
     // DONE todo сделать через useState
     const [draggedTaskId, setDraggedTaskId] = useState(null);
+
+    // if (loading) {
+    //   return <Loading/>
+    // };
   
     function showDelPrompt(id) {
       const userDecision = window.confirm("Удалить задачу?");
@@ -26,6 +32,10 @@ export function TaskList({
   
     function onDragOver(e) {
       e.preventDefault();
+    }
+
+    if (init) {
+      return <div className="init">Инициализация</div>;
     }
   
     if (tasks.length === 0) {
@@ -59,5 +69,5 @@ export function TaskList({
         </li>
       );
     });
-    return <ul>{tasksList}</ul>;
+    return <ul className={ loading ? 'inactive' : '' }>{tasksList}</ul>;
   }
